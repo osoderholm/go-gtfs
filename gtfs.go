@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/artonge/go-csv-tag"
+	"github.com/gocarina/gocsv"
 )
 
 // Load - load GTFS files
@@ -21,12 +21,12 @@ import (
 func Load(dirPath string, filter map[string]bool) (*GTFS, error) {
 	_, err := os.Stat(dirPath)
 	if os.IsNotExist(err) {
-		return nil, fmt.Errorf("Error loading GTFS: directory does not exist")
+		return nil, fmt.Errorf("error loading GTFS: directory does not exist")
 	}
 	g := &GTFS{Path: dirPath}
 	err = loadGTFS(g, filter)
 	if err != nil {
-		return nil, fmt.Errorf("Error loading GTFS: '%v'\n	==> %v", g.Path, err)
+		return nil, fmt.Errorf("error loading GTFS: '%v'\n	==> %v", g.Path, err)
 	}
 	return g, nil
 }
@@ -53,7 +53,7 @@ func LoadSplitted(dirPath string, filter map[string]bool) ([]*GTFS, error) {
 		GTFSs[i] = &GTFS{Path: path.Join(dirPath, dir.Name())}
 		err := loadGTFS(GTFSs[i], filter)
 		if err != nil {
-			return nil, fmt.Errorf("Error loading GTFS: '%v'\n	==> %v", GTFSs[i].Path, err)
+			return nil, fmt.Errorf("error loading GTFS: '%v'\n	==> %v", GTFSs[i].Path, err)
 		}
 		i++
 	}
@@ -86,18 +86,17 @@ func loadGTFS(g *GTFS, filter map[string]bool) error {
 			continue
 		}
 		filePath := path.Join(g.Path, file)
-		// If the file does not existe, skip it
-		_, err := os.Stat(filePath)
+		// If the file does not exist, skip it
+		f, err := os.Open(filePath)
 		if os.IsNotExist(err) {
 			continue
 		}
-		err = csvtag.Load(csvtag.Config{
-			Path: filePath,
-			Dest: dest,
-		})
+		err = gocsv.UnmarshalFile(f, dest)
 		if err != nil {
-			return fmt.Errorf("Error loading file (%v)\n	==> %v", file, err)
+			_ = f.Close()
+			return fmt.Errorf("error loading file (%v)\n	==> %v", file, err)
 		}
+		_ = f.Close()
 	}
 	return nil
 }
@@ -137,11 +136,16 @@ func Dump(g *GTFS, dirPath string, filter map[string]bool) error {
 			continue
 		}
 		filePath := path.Join(dirPath, file)
-
-		err := csvtag.DumpToFile(src, filePath)
+		f, err := os.Create(filePath)
 		if err != nil {
-			return fmt.Errorf("Error dumping file %v: %v", file, err)
+			return fmt.Errorf("error creating file %v: %v", file, err)
 		}
+
+		if err := gocsv.MarshalFile(src, f); err != nil {
+			_ = f.Close()
+			return fmt.Errorf("error dumping file %v: %v", file, err)
+		}
+		_ = f.Close()
 	}
 	return nil
 }
