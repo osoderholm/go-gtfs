@@ -1,0 +1,5 @@
+level_id,level_index,level_name,elevation
+L0,0,Street,0
+L1,-1,Mezzanine,-6
+L2,-2,Southbound,-18
+L3,-3,Northbound,-24

@@ -1,0 +1,4 @@
+table_name,field_name,language,translation,record_id
+stops,stop_name,en,Tokyo Station,stopid000001
+stops,stop_name,fr,Gare de Tokyo,stopid000001
+stops,stop_name,zh,東京站,stopid000001

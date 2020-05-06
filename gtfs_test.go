@@ -3,24 +3,42 @@ package gtfs
 import (
 	"fmt"
 	"path"
+	"reflect"
 	"testing"
 )
 
-// TODO: Include Shapes in tests
 func TestLoad(t *testing.T) {
-	gtfs, err := Load(path.Join("gtfs_test", "ratp"), nil)
+	gtfs, err := Load(path.Join("gtfs_test", "google"), nil)
 	if err != nil {
 		fmt.Println(err)
 		t.Fail()
 	}
-	if len(gtfs.Calendars) == 0 ||
-		len(gtfs.CalendarDates) == 0 ||
-		len(gtfs.Routes) == 0 ||
-		len(gtfs.Stops) == 0 ||
-		len(gtfs.StopsTimes) == 0 ||
-		len(gtfs.Transfers) == 0 ||
-		len(gtfs.Trips) == 0 {
-		t.Fail()
+
+	models := map[string]interface{}{
+		"Agencies":       gtfs.Agencies,
+		"Routes":         gtfs.Routes,
+		"Stops":          gtfs.Stops,
+		"StopsTimes":     gtfs.StopsTimes,
+		"Trips":          gtfs.Trips,
+		"Calendars":      gtfs.Calendars,
+		"CalendarDates":  gtfs.CalendarDates,
+		"Transfers":      gtfs.Transfers,
+		"Shapes":         gtfs.Shapes,
+		"FareAttributes": gtfs.FareAttributes,
+		"FareRules":      gtfs.FareRules,
+		"Frequencies":    gtfs.Frequencies,
+		"Pathways":       gtfs.Pathways,
+		"Levels":         gtfs.Levels,
+		"Translations":   gtfs.Translations,
+		"Attributions":   gtfs.Attributions,
+	}
+
+	for name, model := range models {
+		s := reflect.ValueOf(model)
+		if s.Len() == 0 {
+			fmt.Printf("%s is empty\n", name)
+			t.Fail()
+		}
 	}
 }
 
@@ -39,18 +57,39 @@ func TestLoadNoDir(t *testing.T) {
 }
 
 func TestLoadPartial(t *testing.T) {
-	gtfs, err := Load(path.Join("gtfs_test", "ratp"), map[string]bool{"routes": true})
+	gtfs, err := Load(path.Join("gtfs_test", "google"), map[string]bool{"routes": true})
 	if err != nil {
 		fmt.Println(err)
 		t.Fail()
 	}
-	if len(gtfs.Calendars) != 0 ||
-		len(gtfs.CalendarDates) != 0 ||
-		len(gtfs.Routes) == 0 ||
-		len(gtfs.Stops) != 0 ||
-		len(gtfs.StopsTimes) != 0 ||
-		len(gtfs.Transfers) != 0 ||
-		len(gtfs.Trips) != 0 {
+	models := map[string]interface{}{
+		"Agencies":       gtfs.Agencies,
+		"Stops":          gtfs.Stops,
+		"StopsTimes":     gtfs.StopsTimes,
+		"Trips":          gtfs.Trips,
+		"Calendars":      gtfs.Calendars,
+		"CalendarDates":  gtfs.CalendarDates,
+		"Transfers":      gtfs.Transfers,
+		"Shapes":         gtfs.Shapes,
+		"FareAttributes": gtfs.FareAttributes,
+		"FareRules":      gtfs.FareRules,
+		"Frequencies":    gtfs.Frequencies,
+		"Pathways":       gtfs.Pathways,
+		"Levels":         gtfs.Levels,
+		"Translations":   gtfs.Translations,
+		"Attributions":   gtfs.Attributions,
+	}
+
+	for name, model := range models {
+		s := reflect.ValueOf(model)
+		if s.Len() != 0 {
+			fmt.Printf("%s should be empty\n", name)
+			t.Fail()
+		}
+	}
+
+	if len(gtfs.Routes) == 0 {
+		fmt.Println("Routes should not be empty")
 		t.Fail()
 	}
 }
