@@ -2,6 +2,7 @@ package gtfs
 
 import (
 	"fmt"
+	"github.com/dimchansky/utfbom"
 	"io/ioutil"
 	"os"
 	"path"
@@ -99,7 +100,8 @@ func loadGTFS(g *GTFS, filter map[string]bool) error {
 		if os.IsNotExist(err) {
 			continue
 		}
-		err = gocsv.UnmarshalFile(f, dest)
+		r := utfbom.SkipOnly(f)
+		err = gocsv.Unmarshal(r, dest)
 		if err != nil {
 			_ = f.Close()
 			return fmt.Errorf("error loading file (%v)\n	==> %v", file, err)
