@@ -87,6 +87,7 @@ func loadGTFS(g *GTFS, filter map[string]bool) error {
 		"feed_info.txt":       &g.FeedInfo,
 		"translations.txt":    &g.Translations,
 		"attributions.txt":    &g.Attributions,
+		"trip_notes.txt":      &g.TripNotes,
 	}
 	// Load the files
 	for file, dest := range filesToLoad {
@@ -145,6 +146,7 @@ func Dump(g *GTFS, dirPath string, filter map[string]bool) error {
 		"feed_info.txt":       g.FeedInfo,
 		"translations.txt":    g.Translations,
 		"attributions.txt":    g.Attributions,
+		"trip_notes.txt":      g.TripNotes,
 	}
 	for file, src := range files {
 		if filter != nil && !filter[file[:len(file)-4]] {

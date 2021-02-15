@@ -20,6 +20,7 @@ type GTFS struct {
 	FeedInfo       []FeedInfo
 	Translations   []Translation
 	Attributions   []Attribution
+	TripNotes      []TripNotes
 }
 
 // Route -
@@ -221,4 +222,12 @@ type Attribution struct {
 	URL              string `csv:"attribution_url"`
 	Email            string `csv:"attribution_email"`
 	Phone            string `csv:"attribution_phone"`
+}
+
+// TripNotes is an optional, non-standard file for adding notes to individual trips.
+type TripNotes struct {
+	TripID       string `csv:"trip_id"`
+	Abbreviation string `csv:"abbreviation"`
+	Description  string `csv:"description"`
+	Language     string `csv:"lang"`
 }
