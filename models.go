@@ -226,8 +226,12 @@ type Attribution struct {
 
 // TripNotes is an optional, non-standard file for adding notes to individual trips.
 type TripNotes struct {
-	TripID       string `csv:"trip_id"`
-	Abbreviation string `csv:"abbreviation"`
-	Description  string `csv:"description"`
-	Language     string `csv:"lang"`
+	TripID           string `csv:"trip_id"`
+	Abbreviation     string `csv:"abbreviation"`
+	Description      string `csv:"description"`
+	Language         string `csv:"lang"`
+	FromStopID       string `csv:"from_stop_id"`
+	FromStopSequence string `csv:"from_stop_sequence"`
+	ToStopID         string `csv:"to_stop_id"`
+	ToStopSequence   string `csv:"to_stop_sequence"`
 }
