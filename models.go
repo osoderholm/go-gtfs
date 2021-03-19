@@ -231,7 +231,7 @@ type TripNotes struct {
 	Description      string `csv:"description"`
 	Language         string `csv:"lang"`
 	FromStopID       string `csv:"from_stop_id"`
-	FromStopSequence string `csv:"from_stop_sequence"`
 	ToStopID         string `csv:"to_stop_id"`
-	ToStopSequence   string `csv:"to_stop_sequence"`
+	FromStopSequence int    `csv:"from_stop_sequence"`
+	ToStopSequence   int    `csv:"to_stop_sequence"`
 }
